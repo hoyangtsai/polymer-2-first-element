@@ -1,5 +1,6 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="./bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 
 <dom-module id="icon-toggle">
 
@@ -10,19 +11,43 @@
       :host {
         display: inline-block;
       }
+      iron-icon {
+        fill: var(--icon-toggle-color);
+        stroke: currentcolor;
+      }
+      :host([pressed]) iron-icon {
+        fill: var(--icon-toggle-pressed-color);
+      }
     </style>
 
     <!-- shadow DOM goes here -->
-    <span>Not much here yet.</span>
+    <iron-icon icon="[[toggleIcon]]"></iron-icon>
   </template>
 
   <script>
-    class IconToggle extends Polymer.Element {
+    class IconToggle extends Polymer.GestureEventListeners(Polymer.Element) {
       static get is() {
         return 'icon-toggle';
       }
+      static get properties() {
+        return {
+          pressed: {
+            type: Boolean,
+            notify: true,
+            reflectToAttribute: true,
+            value: false
+          },
+          toggleIcon: {
+            type: String
+          },
+        }
+      }
+      toggle() {
+        this.pressed = !this.pressed;
+      }
       constructor() {
         super();
+        Polymer.Gestures.addListener(this, 'tap', () => this.toggle());
       }
     }
     customElements.define(IconToggle.is, IconToggle);
